@@ -134,7 +134,6 @@ GameObject:
   - component: {fileID: 42847479}
   - component: {fileID: 42847478}
   - component: {fileID: 42847477}
-  - component: {fileID: 42847476}
   m_Layer: 0
   m_Name: DisplayPlane
   m_TagString: Untagged
@@ -142,20 +141,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &42847476
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42847475}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &42847477
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -215,8 +200,8 @@ Transform:
   m_GameObject: {fileID: 42847475}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 0.8486563, z: 0.8486563}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1.3333334, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -304,4 +289,77 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1309990951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1309990954}
+  - component: {fileID: 1309990953}
+  - component: {fileID: 1309990952}
+  m_Layer: 0
+  m_Name: MapGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1309990952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309990951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fd8053957e34c047a995a50cdfe0be0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textureRend: {fileID: 42847477}
+  lineThickness: 1
+  sea: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0}
+  land: {r: 1, g: 1, b: 1, a: 0}
+  line: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0}
+--- !u!114 &1309990953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309990951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f23666b79bc636a43a18aee523a94cbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapType: 1
+  mapWidth: 400
+  mapHeight: 300
+  seed: 5
+  seaLevel: 0.6
+  scale: 150
+  octaves: 5
+  persisitance: 0.45
+  lacunarity: 3
+  offset: {x: 0, y: 0}
+  autoUpdate: 1
+--- !u!4 &1309990954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309990951}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.233287, y: -0.13960361, z: 0.025510058}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
