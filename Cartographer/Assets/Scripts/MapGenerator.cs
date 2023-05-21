@@ -12,6 +12,7 @@ public class MapGenerator : MonoBehaviour
     [Range(1,5)]
     public int lineThickness = 1;
     public bool border = false;
+    public bool gridLines = false;
 
     [Range(0,1)]
     public float seaLevel;
@@ -26,7 +27,7 @@ public class MapGenerator : MonoBehaviour
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings, offset);
 
         MapDisplay display = FindObjectOfType<MapDisplay>();
-        display.DrawMap(noiseMap, colourScheme, lineThickness, seaLevel);
+        display.DrawMap(noiseMap, colourScheme, lineThickness, seaLevel, border, gridLines);
     }
 
     void OnValidate(){
