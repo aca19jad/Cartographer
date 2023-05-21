@@ -4,18 +4,18 @@ using UnityEngine;
 
 public static class Noise {
     
-    public static float[,] GenerateNoiseMap(int width, int height, int seed, float scale, int octaves, float persist, float lac, Vector2 offset){
+    public static float[,] GenerateNoiseMap(int width, int height, NoiseSettings settings, Vector2 offset){
         float[,] noiseMap = new float[width, height];
 
-        System.Random rand = new System.Random(seed);
-        Vector2[] octaveOffsets = new Vector2[octaves];
-        for(int i = 0; i < octaves; i++){
+        System.Random rand = new System.Random(settings.seed);
+        Vector2[] octaveOffsets = new Vector2[settings.octaves];
+        for(int i = 0; i < settings.octaves; i++){
             float xOffset = rand.Next(-100000, 100000) + offset.x;
             float yOffset = rand.Next(-100000, 100000) + offset.y;
             octaveOffsets[i] = new Vector2(xOffset, yOffset);
         }
 
-        if(scale <= 0){scale = 0.0001f;}
+        if(settings.scale <= 0){settings.scale = 0.0001f;}
 
         float maxNoise = float.MinValue;
         float minNoise = float.MaxValue;
@@ -31,14 +31,14 @@ public static class Noise {
 
                 float noiseHeight = 0;
 
-                for (int i = 0; i < octaves; i++){
-                    float xSample = (x - centreWidth) /scale * freq + octaveOffsets[i].x;
-                    float ySample = (y - centreHeight) /scale * freq + octaveOffsets[i].y;
+                for (int i = 0; i < settings.octaves; i++){
+                    float xSample = (x - centreWidth) /settings.scale * freq + octaveOffsets[i].x;
+                    float ySample = (y - centreHeight) /settings.scale * freq + octaveOffsets[i].y;
 
                     float noiseValue = Mathf.PerlinNoise(xSample, ySample) * 2 - 1;
                     noiseHeight += noiseValue * amp;
-                    amp *= persist;
-                    freq *= lac;
+                    amp *= settings.persistance;
+                    freq *= settings.lacunarity;
                 }
                 
                 if(noiseHeight > maxNoise) {
@@ -59,5 +59,14 @@ public static class Noise {
         }
         return noiseMap;
     }
+}
 
+[System.Serializable]
+public struct NoiseSettings{
+    public int seed;
+    public float scale;
+    public int octaves;
+    [Range(0,1)]
+    public float persistance;
+    public float lacunarity;
 }

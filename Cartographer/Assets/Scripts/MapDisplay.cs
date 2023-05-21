@@ -13,24 +13,24 @@ public class MapDisplay : MonoBehaviour
     [HideInInspector]
     public Texture2D currentMapTexture;
 
-    public void DrawMap(float[,] noiseMap, MapType mapType, int lineThickness, float seaLevel){
+    public void DrawMap(float[,] noiseMap, MapColourScheme colourScheme, int lineThickness, float seaLevel){
         int width = noiseMap.GetLength(0);
         int height = noiseMap.GetLength(1);       
         Texture2D texture = new Texture2D(width, height);
 
         Color[] colourMap = new Color[width * height];
 
-        switch(mapType){
-            case MapType.NOISEMAP:
+        switch(colourScheme){
+            case MapColourScheme.NOISEMAP:
                 colourMap = DrawNoiseMap(noiseMap);
                 break;
-            case MapType.SIMPLE_GRYSCL:
+            case MapColourScheme.SIMPLE_GRYSCL:
                 colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, grayscale);
                 break;
-            case MapType.SIMPLE_COLOUR:
+            case MapColourScheme.SIMPLE_COLOUR:
                 colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, coloured);
                 break;
-            case MapType.WEATHERED:
+            case MapColourScheme.WEATHERED:
                 colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, weathered);
                 break;
         }

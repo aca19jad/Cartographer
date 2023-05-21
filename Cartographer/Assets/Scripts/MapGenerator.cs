@@ -4,35 +4,29 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public MapType mapType;
+    public MapColourScheme colourScheme;
 
     public int mapWidth;
     public int mapHeight;
 
-    public int seed;
-
-    [Range(1, 5)]
+    [Range(1,5)]
     public int lineThickness = 1;
+    public bool border = false;
 
-    [Range(0, 1)]
+    [Range(0,1)]
     public float seaLevel;
-    
-    public float scale;
-    public int octaves;
-
-    [Range(0, 1)]
-    public float persisitance;
-    public float lacunarity;
 
     public Vector2 offset;
+
+    public NoiseSettings noiseSettings;
 
     public bool autoUpdate; 
 
     public void GenerateMap(){
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, scale, octaves, persisitance, lacunarity, offset);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings, offset);
 
         MapDisplay display = FindObjectOfType<MapDisplay>();
-        display.DrawMap(noiseMap, mapType, lineThickness, seaLevel);
+        display.DrawMap(noiseMap, colourScheme, lineThickness, seaLevel);
     }
 
     void OnValidate(){
@@ -44,17 +38,17 @@ public class MapGenerator : MonoBehaviour
             mapHeight = 1;
         }
 
-        if(lacunarity < 1){
-            lacunarity = 1;
+        if(noiseSettings.lacunarity < 1){
+            noiseSettings.lacunarity = 1;
         }
 
-        if(octaves < 0){
-            octaves = 1;
+        if(noiseSettings.octaves < 0){
+            noiseSettings.octaves = 1;
         }
     }
 }
 
-public enum MapType{
+public enum MapColourScheme{
     NOISEMAP,
     SIMPLE_GRYSCL,
     SIMPLE_COLOUR, 
