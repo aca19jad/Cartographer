@@ -11,6 +11,9 @@ public class MapGenerator : MonoBehaviour
 
     public int seed;
 
+    [Range(1, 5)]
+    public int lineThickness = 1;
+
     [Range(0, 1)]
     public float seaLevel;
     
@@ -29,15 +32,7 @@ public class MapGenerator : MonoBehaviour
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, scale, octaves, persisitance, lacunarity, offset);
 
         MapDisplay display = FindObjectOfType<MapDisplay>();
-        switch(mapType){
-            case MapType.NOISEMAP:
-                display.DrawNoiseMap(noiseMap);
-                break;
-            case MapType.SIMPLE:
-                display.DrawSimpleMap(noiseMap, seaLevel);
-                break;
-        }
-        
+        display.DrawMap(noiseMap, mapType, lineThickness, seaLevel);
     }
 
     void OnValidate(){
@@ -57,9 +52,11 @@ public class MapGenerator : MonoBehaviour
             octaves = 1;
         }
     }
+}
 
-    public enum MapType{
-        NOISEMAP,
-        SIMPLE
-    }
+public enum MapType{
+    NOISEMAP,
+    SIMPLE_GRYSCL,
+    SIMPLE_COLOUR, 
+    WEATHERED,
 }

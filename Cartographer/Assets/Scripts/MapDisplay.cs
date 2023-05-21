@@ -6,67 +6,83 @@ public class MapDisplay : MonoBehaviour
 {
     public Renderer textureRend;
 
-    [Range(1, 20)]
-    public int lineThickness = 1;
+    public Palette grayscale;
+    public Palette coloured;
+    public Palette weathered;
 
-    public Color sea;
-    public Color land;
-    public Color line;
+    [HideInInspector]
+    public Texture2D currentMapTexture;
 
-    public void DrawNoiseMap(float[,] noiseMap){
+    public void DrawMap(float[,] noiseMap, MapType mapType, int lineThickness, float seaLevel){
         int width = noiseMap.GetLength(0);
-        int height = noiseMap.GetLength(1);
-
+        int height = noiseMap.GetLength(1);       
         Texture2D texture = new Texture2D(width, height);
 
         Color[] colourMap = new Color[width * height];
 
+        switch(mapType){
+            case MapType.NOISEMAP:
+                colourMap = DrawNoiseMap(noiseMap);
+                break;
+            case MapType.SIMPLE_GRYSCL:
+                colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, grayscale);
+                break;
+            case MapType.SIMPLE_COLOUR:
+                colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, coloured);
+                break;
+            case MapType.WEATHERED:
+                colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, weathered);
+                break;
+        }
+
+        texture.SetPixels(colourMap);
+        texture.Apply();
+
+        currentMapTexture = texture;
+
+        textureRend.sharedMaterial.mainTexture = texture;
+        textureRend.transform.localScale = new Vector3((float) width/height, 1, 1)  * 0.95f;
+    }
+
+    private Color[] DrawNoiseMap(float[,] noiseMap){
+        int width = noiseMap.GetLength(0);
+        int height = noiseMap.GetLength(1);
+        Color[] colourMap = new Color[width * height];
+
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
+
                 colourMap[x + y*width] = Color.Lerp(Color.black, Color.white,noiseMap[x, y]);
             }
         }
 
-        texture.SetPixels(colourMap);
-        texture.Apply();
-
-        textureRend.sharedMaterial.mainTexture = texture;
-        textureRend.transform.localScale = new Vector3((float) width/height, 1, 1);
+        return colourMap;
     }
 
-    public void DrawSimpleMap(float[,] noiseMap, float seaLevel){
+    private Color[] DrawSimpleMap(float[,] noiseMap, int lineThickness, float seaLevel, Palette palette){
         int width = noiseMap.GetLength(0);
         int height = noiseMap.GetLength(1);
-
-        Texture2D texture = new Texture2D(width, height);
-
         Color[] colourMap = new Color[width * height];
 
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
-
-                
+            
                 if (noiseMap [x, y] < seaLevel){
-                    colourMap[x + y*width] = sea;
+                    colourMap[x + y*width] = palette.sea.Evaluate(Mathf.InverseLerp(0, seaLevel, noiseMap[x, y]));
                 }
                 else if (IsShoreline(noiseMap, seaLevel, lineThickness, x, y)){
-                    colourMap[x + y*width] = line;
+                    colourMap[x + y*width] = palette.line;
                 }
                 else{
-                    colourMap[x + y*width] = land;
+                    colourMap[x + y*width] = palette.land;
                 }
             }
         }
 
-        texture.SetPixels(colourMap);
-        texture.Apply();
-
-        textureRend.sharedMaterial.mainTexture = texture;
-        textureRend.transform.localScale = new Vector3((float) width/height, 1, 1);
-        
+        return colourMap;
     }
 
-    bool IsShoreline(float[,] noiseMap, float seaLevel, int lineThickness, int xPos, int yPos){
+    private bool IsShoreline(float[,] noiseMap, float seaLevel, int lineThickness, int xPos, int yPos){
         for (int y = -lineThickness; y <= lineThickness; y++){
             for (int x = -lineThickness; x <= lineThickness; x++){
                 if( !(xPos + x < 0 || xPos + x >= noiseMap.GetLength(0)) &&
@@ -77,8 +93,14 @@ public class MapDisplay : MonoBehaviour
                 }
             }
         }
-
         return false;
     }
+}
+
+[System.Serializable]
+public struct Palette{
+    public Color line;
+    public Color land;
+    public Gradient sea;
 }
 
