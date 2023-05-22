@@ -10,13 +10,10 @@ public class MapDisplay : MonoBehaviour
     public Palette coloured;
     public Palette weathered;
 
-    public int borderWidth = 30;
-    public int gridWidth = 50;
-
     [HideInInspector]
     public Texture2D currentMapTexture;
 
-    public void DrawMap(float[,] noiseMap, MapColourScheme colourScheme, int lineThickness, float seaLevel, bool border, bool gridLines){
+    public void DrawMap(float[,] noiseMap, MapSettings mapSettings){
         int width = noiseMap.GetLength(0);
         int height = noiseMap.GetLength(1);       
         Texture2D texture = new Texture2D(width, height);
@@ -24,18 +21,18 @@ public class MapDisplay : MonoBehaviour
         Color[] colourMap = new Color[width * height];
 
         
-        switch(colourScheme){
+        switch(mapSettings.colourScheme){
             case MapColourScheme.NOISEMAP:
                 colourMap = DrawNoiseMap(noiseMap);
                 break;
             case MapColourScheme.SIMPLE_GRYSCL:
-                colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, grayscale);
+                colourMap = DrawSimpleMap(noiseMap, mapSettings.lineThickness, mapSettings.seaLevel, grayscale);
                 break;
             case MapColourScheme.SIMPLE_COLOUR:
-                colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, coloured);
+                colourMap = DrawSimpleMap(noiseMap, mapSettings.lineThickness, mapSettings.seaLevel, coloured);
                 break;
             case MapColourScheme.WEATHERED:
-                colourMap = DrawSimpleMap(noiseMap, lineThickness, seaLevel, weathered);
+                colourMap = DrawSimpleMap(noiseMap, mapSettings.lineThickness, mapSettings.seaLevel, weathered);
                 break;
         }
 
@@ -43,8 +40,11 @@ public class MapDisplay : MonoBehaviour
         for (int y = 0; y < height; y++){
             for (int x = 0; x < width; x++){
                 
-                if(gridLines && (x % gridWidth == 0 || y % gridWidth == 0) && noiseMap[x, y] < seaLevel){
-                    switch(colourScheme){
+                if(mapSettings.gridLines && 
+                (x % mapSettings.lineSpacing == 0 || y % mapSettings.lineSpacing == 0) && 
+                noiseMap[x, y] < mapSettings.seaLevel){
+
+                    switch(mapSettings.colourScheme){
                         case MapColourScheme.SIMPLE_GRYSCL:
                             colourMap[x + width * y] = grayscale.line;
                             break;
@@ -57,8 +57,13 @@ public class MapDisplay : MonoBehaviour
                     }
                 }
 
-                if(border && (x < borderWidth || x > width - borderWidth - 1 || y < borderWidth || y > height - borderWidth - 1)){
-                    colourMap[x + width * y] = (colourScheme == MapColourScheme.WEATHERED) ? weathered.land : Color.white;
+                if(
+                    mapSettings.border && 
+                    (x < mapSettings.borderWidth || 
+                    x > width - mapSettings.borderWidth - 1 || 
+                    y < mapSettings.borderWidth || 
+                    y > height - mapSettings.borderWidth - 1)){
+                    colourMap[x + width * y] = (mapSettings.colourScheme == MapColourScheme.WEATHERED) ? weathered.land : Color.white;
                 }
             }
         }

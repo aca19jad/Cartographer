@@ -4,30 +4,20 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public MapColourScheme colourScheme;
-
     public int mapWidth;
     public int mapHeight;
 
-    [Range(1,5)]
-    public int lineThickness = 1;
-    public bool border = false;
-    public bool gridLines = false;
-
-    [Range(0,1)]
-    public float seaLevel;
-
-    public Vector2 offset;
+    public MapSettings mapSettings;
 
     public NoiseSettings noiseSettings;
 
     public bool autoUpdate; 
 
     public void GenerateMap(){
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings, offset);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
 
         MapDisplay display = FindObjectOfType<MapDisplay>();
-        display.DrawMap(noiseMap, colourScheme, lineThickness, seaLevel, border, gridLines);
+        display.DrawMap(noiseMap, mapSettings);
     }
 
     void OnValidate(){
@@ -46,6 +36,14 @@ public class MapGenerator : MonoBehaviour
         if(noiseSettings.octaves < 0){
             noiseSettings.octaves = 1;
         }
+
+        if(mapSettings.borderWidth < 0){
+            mapSettings.borderWidth = 0;
+        }
+
+        if(mapSettings.lineSpacing < 1){
+            mapSettings.lineSpacing = 1;
+        }
     }
 }
 
@@ -54,4 +52,21 @@ public enum MapColourScheme{
     SIMPLE_GRYSCL,
     SIMPLE_COLOUR, 
     WEATHERED,
+}
+
+[System.Serializable]
+public struct MapSettings{
+    public MapColourScheme colourScheme;
+
+    [Range(0, 1)]
+    public float seaLevel;
+
+    [Range(1, 5)]
+    public int lineThickness;
+
+    public bool border;
+    public int borderWidth;
+
+    public bool gridLines;
+    public int lineSpacing;
 }
