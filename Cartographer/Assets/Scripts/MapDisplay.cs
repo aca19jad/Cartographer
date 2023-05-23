@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MapDisplay : MonoBehaviour
 {
-    public Renderer textureRend;
+    public RawImage img;
 
     public Palette grayscale;
     public Palette coloured;
@@ -41,15 +42,16 @@ public class MapDisplay : MonoBehaviour
 
         currentMapTexture = texture;
 
-        textureRend.sharedMaterial.mainTexture = texture;
-        textureRend.transform.localScale = new Vector3((float) width/height, 1, 1)  * 0.95f;
+        img.texture = texture;
+        img.transform.localScale = new Vector3((float)width/height,1,1);
     }
 }
 
 [System.Serializable]
 public struct Palette{
     public Color line;
-    public Color land;
+    public Color backgroundLine;
+    public Gradient land;
     public Gradient sea;
 }
 

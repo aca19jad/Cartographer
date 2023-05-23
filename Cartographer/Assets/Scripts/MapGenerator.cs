@@ -69,4 +69,11 @@ public struct MapSettings{
 
     public bool gridLines;
     public int lineSpacing;
+
+    public bool compassRose;
+
+    public Vector2Int rosePosition;
+
+    [Range(-Mathf.PI,Mathf.PI)]
+    public float roseAngle;
 }
