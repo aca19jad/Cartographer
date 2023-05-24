@@ -4,9 +4,9 @@ using UnityEngine;
 
 public static class MapDrawer
 {
-    private static float theta = 0.392699081699f;
 
-
+    private static int width;
+    private static int height;
     public static Color[] DrawNoiseMap(float[,] noiseMap){
         int width = noiseMap.GetLength(0);
         int height = noiseMap.GetLength(1);
@@ -23,8 +23,9 @@ public static class MapDrawer
     }
 
     public static Color[] DrawMap(float[,] noiseMap, MapSettings settings, Palette palette){
-        int width = noiseMap.GetLength(0);
-        int height = noiseMap.GetLength(1);
+        width = noiseMap.GetLength(0);
+        height = noiseMap.GetLength(1);
+
         Color[] colourMap = new Color[width * height];
 
         for(int y = 0, index = 0; y < height; y++){
@@ -42,7 +43,7 @@ public static class MapDrawer
             }
         }
 
-        colourMap = Decorate(noiseMap, colourMap, settings, palette);
+        colourMap = Decorate(colourMap, noiseMap, settings, palette);
 
         return colourMap;
     }
@@ -50,8 +51,8 @@ public static class MapDrawer
     public static bool IsShoreline(float[,] noiseMap, int xPos, int yPos, float seaLevel, int lineThickness){
         for (int y = -lineThickness; y <= lineThickness; y++){
             for (int x = -lineThickness; x <= lineThickness; x++){
-                if( !(xPos + x < 0 || xPos + x >= noiseMap.GetLength(0)) &&
-                    !(yPos + y < 0 || yPos + y >= noiseMap.GetLength(1))){
+                if( !(xPos + x < 0 || xPos + x >= width) &&
+                    !(yPos + y < 0 || yPos + y >= height)){
                     if(noiseMap[xPos+x, yPos+y] < seaLevel){
                         return true;
                     }
@@ -61,20 +62,16 @@ public static class MapDrawer
         return false;
     }
 
-    public static Color[] Decorate(float[,] noiseMap, Color[] colourMap, MapSettings settings, Palette palette){
-        int width = noiseMap.GetLength(0);
-        int height = noiseMap.GetLength(1);
+    public static Color[] Decorate(Color[] colourMap, float[,] noiseMap,  MapSettings settings, Palette palette){
 
-        colourMap = DrawLines(colourMap, noiseMap, settings, palette.backgroundLine);
+        if(settings.compassRose)
+            colourMap = DrawCompassRoseRays(colourMap, noiseMap, settings, palette.backgroundLine);
+        
+        if(settings.gridLines)
+            colourMap = DrawGridLines(colourMap, noiseMap, settings, palette.backgroundLine);
 
         for (int y = 0, index = 0; y < height; y++){
             for (int x = 0; x < width; x++, index++){
-
-                if(IsGridLine(x, y, settings) && 
-                noiseMap[x, y] < settings.seaLevel){
-                    colourMap[index] = palette.backgroundLine;
-                }
-
                 if(IsBorder(x, y, width, height, settings))
                 {
                     colourMap[index] = (settings.colourScheme == MapColourScheme.WEATHERED) ? palette.land.Evaluate(0) : Color.white;
@@ -85,95 +82,63 @@ public static class MapDrawer
         return colourMap;
     }
 
-    private static bool IsGridLine(int x, int y, MapSettings settings){
-        return settings.gridLines && (x % settings.lineSpacing == 0 || y % settings.lineSpacing == 0);
-    }
-
     private static bool IsBorder(int x, int y, int width, int height, MapSettings settings){
         return settings.border && 
                 (x < settings.borderWidth || x > width - settings.borderWidth - 1 || 
                 y < settings.borderWidth || y > height - settings.borderWidth - 1);
     }
 
-    private static Color[] DrawLines(Color[] colourMap, float[,] noiseMap, MapSettings settings, Color lineColour){
-        int width = noiseMap.GetLength(0);
-        int height = noiseMap.GetLength(1);
+    private static Color[] DrawGridLines(Color[] colourMap, float[,] noiseMap, MapSettings settings, Color lineColour){
+        for (int x = 0; x < width; x+=settings.lineSpacing)
+        {
+            colourMap = LineDrawer.DrawLine(colourMap, noiseMap, new Vector2(x, 0), new Vector2(x, height-1), lineColour, settings.seaLevel);
+        }
+        
+        for (int y = 0; y < height; y+=settings.lineSpacing)
+        {
+            colourMap = LineDrawer.DrawLine(colourMap, noiseMap, new Vector2(0,y), new Vector2(width-1,y), lineColour, settings.seaLevel);
+        }
+        
+        return colourMap;
+    }
+
+    // function that draws the rays extending from the compass rose 
+    private static Color[] DrawCompassRoseRays(Color[] colourMap, float[,] noiseMap, MapSettings settings, Color lineColour){
+
+        // stores a value equal to 1/16 of a full turn or 22.5 degrees
         float delta_theta = Mathf.PI/8f;
 
+        // modulo the given angle so tht each ray only rotates by a maximum 22.5 degree angle
         float theta = settings.roseAngle % delta_theta;
 
+        // define angles used in equations to simplify later expressions
         float[] angles = new float[7];
         for (int i = -3; i < 4; i++)
         {
             angles[i+3] = Mathf.Tan(theta + i * delta_theta);
         }
 
+        // calculates the equation for each ray and draws it to the colourMap
         for (int i = 0; i < 8; i++)
         {
-            Vector3 eq = new Vector3();
+            Vector3 eq = new Vector3(); // equation vector (A, B, C) -> Ax + By = C
 
+            // sets up the equation vector
+            // special case for when angle could equal 90 because tan(90) = infinity so change the frame from x to y 
             if(i < 7){
                 eq = new Vector3(1, -angles[i], (settings.rosePosition.x-settings.rosePosition.y * angles[i]));
-            }
+            } 
             else{
                 eq = new Vector3(angles[3], 1, (settings.rosePosition.y+settings.rosePosition.x * angles[3]));
             }
 
-            Vector2[] points = GetEdgeCoords(eq, width, height); 
-            colourMap = DrawLine(colourMap, noiseMap, points[0], points[1], lineColour, settings.seaLevel);
+            // gets the intersections with the edge of the map
+            Vector2[] points = LineDrawer.GetEdgeCoords(eq, width, height);
+
+            // draws the line on the colourMap;
+            colourMap = LineDrawer.DrawLine(colourMap, noiseMap, points[0], points[1], lineColour, settings.seaLevel);
         }
 
         return colourMap;
-    }
-
-    private static Color[] DrawLine(Color[] colourMap, float[,] noiseMap, Vector2 p1, Vector2 p2, Color lineColour, float seaLevel){
-        Vector2 t = p1;
-        float step = 1/Mathf.Sqrt (Mathf.Pow (p2.x - p1.x, 2) + Mathf.Pow (p2.y - p1.y, 2));
-        float counter = 0;
-        
-        while ((int)t.x != (int)p2.x || (int)t.y != (int)p2.y) {
-            t = Vector2.Lerp(p1, p2, counter);
-            counter += step;
-            if(noiseMap[(int)t.x,(int)t.y] < seaLevel)
-                colourMap[(int)t.x + noiseMap.GetLength(0) * (int)t.y] = lineColour;
-        }
-        return colourMap;
-    }
-
-    private static Vector2[] GetEdgeCoords(Vector3 eq, int width, int height){
-        
-        Vector3[] edges = {
-            new Vector3(1, 0, 0),
-            new Vector3(0, 1, 0),
-            new Vector3(1, 0, width-1),
-            new Vector3(0, 1, height-1)
-        };
-
-        Vector2[] points = new Vector2[2];
-        int index = 0;
-
-        foreach (Vector3 edge in edges)
-        {
-            Vector2 point = GetEdgeCoord(eq, edge);
-            
-            if(point.x >= 0 && point.x < width && point.y >= 0 && point.y < height){
-                points[index] = point;
-                index++;
-            }
-        }
-
-        return points;
-    }
-
-    private static Vector2 GetEdgeCoord(Vector3 a, Vector3 b){
-        float delta = a.x * b.y - a.y * b.x;
-        if(delta == 0){
-            return new Vector2(-1,-1);
-        }
-        else{
-            int x = (int)((b.y*a.z-a.y*b.z) / delta);
-            int y = (int)((a.x*b.z-b.x*a.z) / delta);
-            return new Vector2(x, y);
-        }
     }
 }
