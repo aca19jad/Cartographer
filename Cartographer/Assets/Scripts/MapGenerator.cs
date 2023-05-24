@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    // PUBLIC
     public int mapWidth;
     public int mapHeight;
 
@@ -13,6 +14,7 @@ public class MapGenerator : MonoBehaviour
 
     public bool autoUpdate; 
 
+    // callback to generate a map with given settings
     public void GenerateMap(){
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
 
@@ -20,6 +22,8 @@ public class MapGenerator : MonoBehaviour
         display.DrawMap(noiseMap, mapSettings);
     }
 
+
+    // Editor function to bound parameters
     void OnValidate(){
         if(mapWidth < 1){
             mapWidth = 1;
@@ -47,6 +51,7 @@ public class MapGenerator : MonoBehaviour
     }
 }
 
+// different choices of map to render
 public enum MapColourScheme{
     NOISEMAP,
     SIMPLE_GRYSCL,
@@ -54,6 +59,7 @@ public enum MapColourScheme{
     WEATHERED,
 }
 
+// struct to store all of the cosmetic settings for a map
 [System.Serializable]
 public struct MapSettings{
     public MapColourScheme colourScheme;
@@ -74,6 +80,6 @@ public struct MapSettings{
 
     public Vector2Int rosePosition;
 
-    [Range(-Mathf.PI,Mathf.PI)]
+    [Range(-Mathf.PI, Mathf.PI)]
     public float roseAngle;
 }

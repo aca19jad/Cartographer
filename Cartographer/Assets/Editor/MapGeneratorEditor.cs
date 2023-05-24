@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+// custom editor to add a "Generate" button to the inspector of MapGenerator
 [CustomEditor(typeof(MapGenerator))]
 public class MapGeneratorEditor : Editor {
     public override void OnInspectorGUI(){
