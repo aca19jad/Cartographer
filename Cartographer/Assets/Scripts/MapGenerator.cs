@@ -15,33 +15,55 @@ public class MapGenerator : MonoBehaviour
     public bool autoUpdate; 
 
     //PRIVATE
+
+    MapDisplay display;
     private int check_mapWidth;
     private int check_mapHeight;
-
     private MapSettings check_mapSettings;
-
     private NoiseSettings check_noiseSettings;
 
     private float[,] noiseMap;
 
     void Start(){
-        autoUpdate = false;
+        display = FindObjectOfType<MapDisplay>();
 
-        
+        autoUpdate = false;
+        UpdateCheckVariables();
+
+        noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
     }
 
     void Update(){
-        if(autoUpdate){
+        if(autoUpdate && CheckAllSettings()){
             Debug.Log("AutoUpdating");
+            GenerateMap();
         }
     }
 
     // callback to generate a map with given settings
     public void GenerateMap(){
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
-
-        MapDisplay display = FindObjectOfType<MapDisplay>();
+        if(CheckNoiseMapSettings()){
+            Debug.Log("Updating Noise Map...");
+            noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
+        }
+            
         display.DrawMap(noiseMap, mapSettings);
+        UpdateCheckVariables();
+    }
+
+    private bool CheckNoiseMapSettings(){
+        return !(
+            mapWidth == check_mapWidth && 
+            mapHeight == check_mapHeight && 
+            noiseSettings.Equals(check_noiseSettings));
+    }
+
+    private bool CheckAllSettings(){
+        return!(
+            mapWidth == check_mapWidth && 
+            mapHeight == check_mapHeight && 
+            noiseSettings.Equals(check_noiseSettings) &&
+            mapSettings.Equals(check_mapSettings));
     }
 
 
@@ -74,6 +96,13 @@ public class MapGenerator : MonoBehaviour
         if(mapSettings.lineSpacing < 1){
             mapSettings.lineSpacing = 1;
         }
+    }
+
+    private void UpdateCheckVariables(){
+        check_mapWidth = mapWidth;
+        check_mapHeight = mapHeight;
+        check_mapSettings = mapSettings;
+        check_noiseSettings = noiseSettings;
     }
 }
 
