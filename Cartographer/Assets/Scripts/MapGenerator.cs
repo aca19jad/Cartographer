@@ -26,29 +26,31 @@ public class MapGenerator : MonoBehaviour
 
     void Start(){
         display = FindObjectOfType<MapDisplay>();
-
+        noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
+        display.DrawMap(noiseMap, mapSettings);
+        
         autoUpdate = false;
         UpdateCheckVariables();
-
-        noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
     }
 
     void Update(){
         if(autoUpdate && CheckAllSettings()){
-            Debug.Log("AutoUpdating");
+            Debug.Log("Auto Updating");
             GenerateMap();
         }
     }
 
     // callback to generate a map with given settings
     public void GenerateMap(){
-        if(CheckNoiseMapSettings()){
-            Debug.Log("Updating Noise Map...");
-            noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
+        if(CheckAllSettings()){
+            if(CheckNoiseMapSettings()){
+                Debug.Log("Updating Noise Map...");
+                noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
+            }
+                
+            display.DrawMap(noiseMap, mapSettings);
+            UpdateCheckVariables();
         }
-            
-        display.DrawMap(noiseMap, mapSettings);
-        UpdateCheckVariables();
     }
 
     private bool CheckNoiseMapSettings(){
