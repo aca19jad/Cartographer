@@ -14,6 +14,28 @@ public class MapGenerator : MonoBehaviour
 
     public bool autoUpdate; 
 
+    //PRIVATE
+    private int check_mapWidth;
+    private int check_mapHeight;
+
+    private MapSettings check_mapSettings;
+
+    private NoiseSettings check_noiseSettings;
+
+    private float[,] noiseMap;
+
+    void Start(){
+        autoUpdate = false;
+
+        
+    }
+
+    void Update(){
+        if(autoUpdate){
+            Debug.Log("AutoUpdating");
+        }
+    }
+
     // callback to generate a map with given settings
     public void GenerateMap(){
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
@@ -23,7 +45,11 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-    // Editor function to bound parameters
+    public void ToggleAutoUpdate(){
+        autoUpdate = !autoUpdate;
+    }
+
+    // Editor only function to bound parameters
     void OnValidate(){
         if(mapWidth < 1){
             mapWidth = 1;

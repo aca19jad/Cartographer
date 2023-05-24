@@ -4,7 +4,6 @@ using UnityEngine;
 
 public static class MapDrawer
 {
-
     private static int width;
     private static int height;
     public static Color[] DrawNoiseMap(float[,] noiseMap){
@@ -115,7 +114,7 @@ public static class MapDrawer
         float[] angles = new float[7];
         for (int i = -3; i < 4; i++)
         {
-            angles[i+3] = Mathf.Tan(theta + i * delta_theta);
+            angles[i + 3] = Mathf.Tan(theta + i * delta_theta);
         }
 
         // calculates the equation for each ray and draws it to the colourMap
