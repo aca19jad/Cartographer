@@ -4,8 +4,10 @@ using UnityEngine;
 
 public static class MapDrawer
 {
+
     private static int width;
     private static int height;
+
     public static Color[] DrawNoiseMap(float[,] noiseMap){
         int width = noiseMap.GetLength(0);
         int height = noiseMap.GetLength(1);
@@ -29,7 +31,7 @@ public static class MapDrawer
 
         for(int y = 0, index = 0; y < height; y++){
             for(int x = 0; x < width; x++, index++){
-            
+        
                 if (noiseMap [x, y] < settings.seaLevel){
                     colourMap[index] = palette.sea.Evaluate(Mathf.InverseLerp(0, settings.seaLevel, noiseMap[x, y]));
                 }
@@ -65,15 +67,29 @@ public static class MapDrawer
 
         if(settings.compassRose)
             colourMap = DrawCompassRoseRays(colourMap, noiseMap, settings, palette.backgroundLine);
-        
+    
         if(settings.gridLines)
             colourMap = DrawGridLines(colourMap, noiseMap, settings, palette.backgroundLine);
 
-        for (int y = 0, index = 0; y < height; y++){
-            for (int x = 0; x < width; x++, index++){
-                if(IsBorder(x, y, width, height, settings))
-                {
-                    colourMap[index] = (settings.colourScheme == MapColourScheme.WEATHERED) ? palette.land.Evaluate(0) : Color.white;
+        if(settings.border)
+            colourMap = DrawBorder(colourMap, settings.borderWidth, palette.border);
+
+        return colourMap;
+    }
+
+    private static Color[] DrawBorder(Color[] colourMap, int borderWidth, Color borderColour){
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if(y < borderWidth || y >= height-borderWidth-1){
+                    colourMap[x + y * width] = borderColour;
+                }
+                else if(x < borderWidth || x >= width-borderWidth-1){
+                    colourMap[x + y * width] = borderColour;
+                }
+                else{
+                    x = width-borderWidth-1;
                 }
             }
         }
@@ -81,21 +97,29 @@ public static class MapDrawer
         return colourMap;
     }
 
-    private static bool IsBorder(int x, int y, int width, int height, MapSettings settings){
-        return settings.border && 
-                (x < settings.borderWidth || x > width - settings.borderWidth - 1 || 
-                y < settings.borderWidth || y > height - settings.borderWidth - 1);
-    }
-
     private static Color[] DrawGridLines(Color[] colourMap, float[,] noiseMap, MapSettings settings, Color lineColour){
         for (int x = 0; x < width; x+=settings.lineSpacing)
         {
-            colourMap = LineDrawer.DrawLine(colourMap, noiseMap, new Vector2(x, 0), new Vector2(x, height-1), lineColour, settings.seaLevel);
+            colourMap = LineDrawer.DrawLine(
+                colourMap, 
+                noiseMap, 
+                new Vector2(x, 0), 
+                new Vector2(x, height-1), 
+                lineColour, 
+                settings.seaLevel
+            );
         }
         
         for (int y = 0; y < height; y+=settings.lineSpacing)
         {
-            colourMap = LineDrawer.DrawLine(colourMap, noiseMap, new Vector2(0,y), new Vector2(width-1,y), lineColour, settings.seaLevel);
+            colourMap = LineDrawer.DrawLine(
+                colourMap, 
+                noiseMap, 
+                new Vector2(0,y), 
+                new Vector2(width-1,y), 
+                lineColour, 
+                settings.seaLevel
+            );
         }
         
         return colourMap;

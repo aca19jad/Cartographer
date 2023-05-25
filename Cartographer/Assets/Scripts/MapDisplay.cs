@@ -51,6 +51,7 @@ public class MapDisplay : MonoBehaviour
 public struct Palette{
     public Color line;
     public Color backgroundLine;
+    public Color border;
     public Gradient land;
     public Gradient sea;
 }
