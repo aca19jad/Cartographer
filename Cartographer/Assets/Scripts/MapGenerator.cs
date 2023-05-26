@@ -28,8 +28,7 @@ public class MapGenerator : MonoBehaviour
         display = FindObjectOfType<MapDisplay>();
         noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
         display.DrawMap(noiseMap, mapSettings);
-        
-        autoUpdate = false;
+
         UpdateCheckVariables();
     }
 
@@ -66,11 +65,6 @@ public class MapGenerator : MonoBehaviour
             mapHeight == check_mapHeight && 
             noiseSettings.Equals(check_noiseSettings) &&
             mapSettings.Equals(check_mapSettings));
-    }
-
-
-    public void ToggleAutoUpdate(){
-        autoUpdate = !autoUpdate;
     }
 
     // Editor only function to bound parameters
