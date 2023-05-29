@@ -26,6 +26,10 @@ public class MapGenerator : MonoBehaviour
 
     void Start(){
         display = FindObjectOfType<MapDisplay>();
+        noiseSettings.seed = 1;//System.DateTime.Now.ToString().GetHashCode();
+
+        Debug.Log(noiseSettings.seed);
+
         noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseSettings);
         display.DrawMap(noiseMap, mapSettings);
 

@@ -53,7 +53,7 @@ public static class MapDrawer
             for (int x = -lineThickness; x <= lineThickness; x++){
                 if( !(xPos + x < 0 || xPos + x >= width) &&
                     !(yPos + y < 0 || yPos + y >= height)){
-                    if(noiseMap[xPos+x, yPos+y] < seaLevel){
+                    if(noiseMap[xPos+x, yPos+y] < seaLevel && (x*x + y*y) <= lineThickness * lineThickness){
                         return true;
                     }
                 }

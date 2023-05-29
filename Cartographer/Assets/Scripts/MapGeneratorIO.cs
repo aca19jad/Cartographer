@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-public class MapGeneratorInput : MonoBehaviour
+public class MapGeneratorIO : MonoBehaviour
 {
     // PUBLIC
     public RectTransform mapRect;
     public GameObject compassRoseObj;
+
+    public TMP_InputField seedField;
 
     // PRIVATE
     private MapGenerator mapGen;
@@ -31,6 +33,8 @@ public class MapGeneratorInput : MonoBehaviour
         updateCompassRosePosition = false;
         updateCompassRoseRotation = false;
         compassRoseObj.SetActive(false);
+
+        seedField.text = mapGen.noiseSettings.seed.ToString();
     }
 
     void Update()
@@ -46,7 +50,9 @@ public class MapGeneratorInput : MonoBehaviour
     }
 
     public void Generate(){
+        mapGen.noiseSettings.seed = System.DateTime.Now.ToString().GetHashCode();
         mapGen.GenerateMap();
+        seedField.text = mapGen.noiseSettings.seed.ToString();
     }
 
     public void ToggleAutoUpdate(Toggle toggle){
@@ -65,6 +71,18 @@ public class MapGeneratorInput : MonoBehaviour
         mapGen.mapSettings.compassRose = toggle.isOn;
         updateCompassRosePosition = toggle.isOn;
         compassRoseObj.SetActive(toggle.isOn);
+    }
+
+    public void RepositionCompassRose(){
+        updateCompassRosePosition = true;
+    }
+
+    public void ReorientCompassRose(){
+        updateCompassRoseRotation = true;
+    }
+
+    public void UpdateSeed(TMP_InputField field){
+        mapGen.noiseSettings.seed = int.Parse(field.text);
     }
 
     public void UpdateMapType(TMP_Dropdown dropdown){
