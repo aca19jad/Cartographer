@@ -34,7 +34,7 @@ public class MapGenerator : MonoBehaviour
 
     void Update(){
         if(autoUpdate && CheckAllSettings()){
-            Debug.Log("Auto Updating");
+            //Debug.Log("Auto Updating");
             GenerateMap();
         }
     }
@@ -133,4 +133,6 @@ public struct MapSettings{
 
     [Range(-Mathf.PI, Mathf.PI)]
     public float roseAngle;
+
+    public Texture2D roseTexture;
 }

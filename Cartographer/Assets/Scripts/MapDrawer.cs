@@ -4,7 +4,6 @@ using UnityEngine;
 
 public static class MapDrawer
 {
-
     private static int width;
     private static int height;
 
@@ -49,7 +48,7 @@ public static class MapDrawer
         return colourMap;
     }
 
-    public static bool IsShoreline(float[,] noiseMap, int xPos, int yPos, float seaLevel, int lineThickness){
+    private static bool IsShoreline(float[,] noiseMap, int xPos, int yPos, float seaLevel, int lineThickness){
         for (int y = -lineThickness; y <= lineThickness; y++){
             for (int x = -lineThickness; x <= lineThickness; x++){
                 if( !(xPos + x < 0 || xPos + x >= width) &&
@@ -63,7 +62,7 @@ public static class MapDrawer
         return false;
     }
 
-    public static Color[] Decorate(Color[] colourMap, float[,] noiseMap,  MapSettings settings, Palette palette){
+    private static Color[] Decorate(Color[] colourMap, float[,] noiseMap,  MapSettings settings, Palette palette){
 
         if(settings.compassRose)
             colourMap = DrawCompassRoseRays(colourMap, noiseMap, settings, palette.backgroundLine);
