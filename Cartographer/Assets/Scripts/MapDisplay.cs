@@ -43,7 +43,9 @@ public class MapDisplay : MonoBehaviour
         currentMapTexture = texture;
 
         img.texture = texture;
-        img.transform.localScale = new Vector3((float)width/height,1,1);
+
+        RectTransform rect = img.gameObject.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(width, height);
     }
 }
 

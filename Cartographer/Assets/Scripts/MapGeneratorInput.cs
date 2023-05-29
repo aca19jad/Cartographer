@@ -5,21 +5,24 @@ using UnityEngine.UI;
 using TMPro;
 public class MapGeneratorInput : MonoBehaviour
 {
-    public Vector2 scaledMousePos;
+    public RectTransform mapRect;
+
+    private Vector2Int scaledMousePos;
 
     private MapGenerator mapGen;
-    // Start is called before the first frame update
+
     void Start()
     {
         mapGen = gameObject.GetComponent<MapGenerator>();
         mapGen.autoUpdate = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        scaledMousePos = Input.mousePosition;
-        Debug.Log(scaledMousePos);
+        // rescale the mouse position coordinates to match the map size
+        if(RectTransformUtility.RectangleContainsScreenPoint(mapRect, Input.mousePosition)){
+            CalculateMousePosition(mapRect.localScale);
+        }
     }
 
     public void Generate(){
@@ -62,5 +65,18 @@ public class MapGeneratorInput : MonoBehaviour
 
     public void UpdateLineThickness(Slider slider){
         mapGen.mapSettings.lineThickness = (int)slider.value;
+    }
+
+    private void CalculateMousePosition(Vector3 scale){
+        // rescale (0, 0) to the bottom left corner of the map instead of the screen
+        Vector3 pixelOffset = new Vector3(
+            (Screen.width - mapGen.mapWidth * scale.x ) / 2f,
+            (Screen.height - mapGen.mapHeight * scale.y ) / 2f,
+            0
+        );
+
+        // update the scaled mouse position with the new zero point and scaled to the correct width and height
+        scaledMousePos.x = (int) ((Input.mousePosition.x - pixelOffset.x) / scale.x);
+        scaledMousePos.y = (int) ((Input.mousePosition.y - pixelOffset.y) / scale.y);
     }
 }
