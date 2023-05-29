@@ -92,9 +92,18 @@ public class MapGeneratorInput : MonoBehaviour
     }
 
     public void UpdateLineThickness(Slider slider){
-        mapGen.mapSettings.lineThickness = (int)slider.value;
+        mapGen.mapSettings.lineThickness = (int) slider.value;
     }
 
+    public void UpdateGridLineSpacing(Slider slider){
+        mapGen.mapSettings.lineSpacing = (int) slider.value;
+    }
+
+    public void UpdateBorderThickness(Slider slider){
+        mapGen.mapSettings.borderWidth = (int) slider.value;
+    }
+
+    // function that scales the mouse position from screen space to map space
     private void CalculateMousePosition(Vector3 scale){
         // rescale (0, 0) to the bottom left corner of the map instead of the screen
         Vector3 pixelOffset = new Vector3(
@@ -110,7 +119,6 @@ public class MapGeneratorInput : MonoBehaviour
 
     // Update callbacks triggered by input for the compass rose
     private void UpdateCompassRose(){
-        
         // updates position
         if(updateCompassRosePosition){
             mapGen.mapSettings.rosePosition = scaledMousePos;
