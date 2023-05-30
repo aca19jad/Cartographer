@@ -40,15 +40,15 @@ public class MapGeneratorIO : MonoBehaviour
     void Update()
     {
         // rescale the mouse position coordinates to match the map size
-        if(RectTransformUtility.RectangleContainsScreenPoint(mapRect, Input.mousePosition)){
-            CalculateMousePosition(mapRect.localScale);
-        }
-
+        CalculateMousePosition(mapRect.localScale);
+        Debug.Log(Input.mousePosition - new Vector3(Screen.width/2f, Screen.height/2f, 0));
+    
         if(mapGen.mapSettings.compassRose){
             UpdateCompassRose();
         }
     }
 
+    #region [Public UI callbacks]
     public void Generate(){
         mapGen.noiseSettings.seed = System.DateTime.Now.ToString().GetHashCode();
         mapGen.GenerateMap();
@@ -120,6 +120,7 @@ public class MapGeneratorIO : MonoBehaviour
     public void UpdateBorderThickness(Slider slider){
         mapGen.mapSettings.borderWidth = (int) slider.value;
     }
+    #endregion
 
     // function that scales the mouse position from screen space to map space
     private void CalculateMousePosition(Vector3 scale){
@@ -140,7 +141,7 @@ public class MapGeneratorIO : MonoBehaviour
         // updates position
         if(updateCompassRosePosition){
             mapGen.mapSettings.rosePosition = scaledMousePos;
-            compassRoseObj.transform.position = Input.mousePosition;
+            compassRoseObj.transform.position = (Input.mousePosition - new Vector3(Screen.width/2f, Screen.height/2f, 0)) / (Screen.height / 10f);
         }
 
         // updates rotation, sets the angle between 0 - 360 degrees
