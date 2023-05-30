@@ -71,10 +71,18 @@ public class MapGeneratorIO : MonoBehaviour
         mapGen.mapSettings.gridLines = toggle.isOn;
     }
 
+    public void ToggleGridLinesUnderLand(Toggle toggle){
+        mapGen.mapSettings.gridLineUnder = toggle.isOn;
+    }
+
     public void ToggleCompassRose(Toggle toggle){
         mapGen.mapSettings.compassRose = toggle.isOn;
         updateCompassRosePosition = toggle.isOn;
         compassRoseObj.SetActive(toggle.isOn);
+    }
+
+    public void ToggleCompassRoseUnderLand(Toggle toggle){
+        mapGen.mapSettings.compassRoseUnder = toggle.isOn;
     }
 
     // BUTTONS

@@ -105,7 +105,7 @@ public static class MapDrawer
                 new Vector2(x, 0), 
                 new Vector2(x, height-1), 
                 lineColour, 
-                settings.seaLevel
+                settings.gridLineUnder ? settings.seaLevel : 2
             );
         }
         
@@ -117,7 +117,7 @@ public static class MapDrawer
                 new Vector2(0,y), 
                 new Vector2(width-1,y), 
                 lineColour, 
-                settings.seaLevel
+                settings.gridLineUnder ? settings.seaLevel : 2
             );
         }
         
@@ -158,7 +158,14 @@ public static class MapDrawer
             Vector2[] points = LineDrawer.GetEdgeCoords(eq, width, height);
 
             // draws the line on the colourMap;
-            colourMap = LineDrawer.DrawLine(colourMap, noiseMap, points[0], points[1], lineColour, settings.seaLevel);
+            colourMap = LineDrawer.DrawLine(
+                colourMap, 
+                noiseMap, 
+                points[0], 
+                points[1], 
+                lineColour, 
+                settings.compassRoseUnder ? settings.seaLevel : 2
+            );
         }
 
         return colourMap;
