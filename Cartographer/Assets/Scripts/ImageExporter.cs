@@ -28,6 +28,7 @@ public class ImageExporter : MonoBehaviour
         canvas.worldCamera = saveCam;
         mapTF.localScale = Vector3.one;
         compassTF.localPosition = compassTF.localPosition / mapScale.x;
+        compassTF.localScale = compassTF.localScale / mapScale.x;
 
         saveCam.Render();
 
@@ -37,6 +38,7 @@ public class ImageExporter : MonoBehaviour
         ExportAsPNG(saveTex);
 
         mapTF.localScale = mapScale;
+        compassTF.localScale = compassTF.localScale * mapScale.x;
         compassTF.localPosition = compassTF.localPosition * mapScale.x;
         menus.SetActive(true);
         canvas.worldCamera = Camera.main;
