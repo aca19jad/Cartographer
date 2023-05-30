@@ -114,29 +114,3 @@ public enum MapColourScheme{
     WEATHERED,
 }
 
-// struct to store all of the cosmetic settings for a map
-[System.Serializable]
-public struct MapSettings{
-    public MapColourScheme colourScheme;
-
-    [Range(0, 1)]
-    public float seaLevel;
-
-    [Range(1, 5)]
-    public int lineThickness;
-
-    public bool border;
-    public int borderWidth;
-
-    public bool gridLines;
-    public int lineSpacing;
-
-    public bool compassRose;
-
-    public Vector2Int rosePosition;
-
-    [Range(-Mathf.PI, Mathf.PI)]
-    public float roseAngle;
-
-    public Texture2D roseTexture;
-}

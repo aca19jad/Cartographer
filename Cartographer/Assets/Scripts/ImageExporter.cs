@@ -10,6 +10,7 @@ public class ImageExporter : MonoBehaviour
 
     public Canvas canvas;
     public Transform mapTF;
+    public Transform compassTF;
 
     public RenderTexture rTex;
 
@@ -26,6 +27,7 @@ public class ImageExporter : MonoBehaviour
         menus.SetActive(false);
         canvas.worldCamera = saveCam;
         mapTF.localScale = Vector3.one;
+        compassTF.localPosition = compassTF.localPosition / mapScale.x;
 
         saveCam.Render();
 
@@ -35,6 +37,7 @@ public class ImageExporter : MonoBehaviour
         ExportAsPNG(saveTex);
 
         mapTF.localScale = mapScale;
+        compassTF.localPosition = compassTF.localPosition * mapScale.x;
         menus.SetActive(true);
         canvas.worldCamera = Camera.main;
     }

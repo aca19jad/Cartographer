@@ -16,6 +16,7 @@ public class MapGeneratorIO : MonoBehaviour
     private MapDisplay display;
 
     private Vector2Int scaledMousePos;
+    private Vector3 centring;
 
     private bool updateCompassRosePosition;
     private bool updateCompassRoseRotation;
@@ -30,6 +31,8 @@ public class MapGeneratorIO : MonoBehaviour
         compassImg = compassRoseObj.GetComponent<RawImage>();
         mapGen.autoUpdate = true;
 
+        centring = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
+
         updateCompassRosePosition = false;
         updateCompassRoseRotation = false;
         compassRoseObj.SetActive(false);
@@ -41,7 +44,6 @@ public class MapGeneratorIO : MonoBehaviour
     {
         // rescale the mouse position coordinates to match the map size
         CalculateMousePosition(mapRect.localScale);
-        Debug.Log(Input.mousePosition - new Vector3(Screen.width/2f, Screen.height/2f, 0));
     
         if(mapGen.mapSettings.compassRose){
             UpdateCompassRose();
@@ -54,6 +56,8 @@ public class MapGeneratorIO : MonoBehaviour
         mapGen.GenerateMap();
         seedField.text = mapGen.noiseSettings.seed.ToString();
     }
+    
+    // TOGGLES
 
     public void ToggleAutoUpdate(Toggle toggle){
         mapGen.autoUpdate = toggle.isOn;
@@ -73,6 +77,8 @@ public class MapGeneratorIO : MonoBehaviour
         compassRoseObj.SetActive(toggle.isOn);
     }
 
+    // BUTTONS
+
     public void RepositionCompassRose(){
         updateCompassRosePosition = true;
     }
@@ -80,6 +86,26 @@ public class MapGeneratorIO : MonoBehaviour
     public void ReorientCompassRose(){
         updateCompassRoseRotation = true;
     }
+
+    // SLIDERS
+
+    public void UpdateSeaLevel(Slider slider){
+        mapGen.mapSettings.seaLevel = slider.value;
+    }
+
+    public void UpdateLineThickness(Slider slider){
+        mapGen.mapSettings.lineThickness = (int) slider.value;
+    }
+
+    public void UpdateGridLineSpacing(Slider slider){
+        mapGen.mapSettings.lineSpacing = (int) slider.value;
+    }
+
+    public void UpdateBorderThickness(Slider slider){
+        mapGen.mapSettings.borderWidth = (int) slider.value;
+    }
+
+    // OTHER
 
     public void UpdateSeed(TMP_InputField field){
         mapGen.noiseSettings.seed = int.Parse(field.text);
@@ -104,22 +130,6 @@ public class MapGeneratorIO : MonoBehaviour
         compassColor.a = 1f;
         compassImg.color = compassColor;
     }
-
-    public void UpdateSeaLevel(Slider slider){
-        mapGen.mapSettings.seaLevel = slider.value;
-    }
-
-    public void UpdateLineThickness(Slider slider){
-        mapGen.mapSettings.lineThickness = (int) slider.value;
-    }
-
-    public void UpdateGridLineSpacing(Slider slider){
-        mapGen.mapSettings.lineSpacing = (int) slider.value;
-    }
-
-    public void UpdateBorderThickness(Slider slider){
-        mapGen.mapSettings.borderWidth = (int) slider.value;
-    }
     #endregion
 
     // function that scales the mouse position from screen space to map space
@@ -141,7 +151,7 @@ public class MapGeneratorIO : MonoBehaviour
         // updates position
         if(updateCompassRosePosition){
             mapGen.mapSettings.rosePosition = scaledMousePos;
-            compassRoseObj.transform.position = (Input.mousePosition - new Vector3(Screen.width/2f, Screen.height/2f, 0)) / (Screen.height / 10f);
+            compassRoseObj.GetComponent<RectTransform>().localPosition = (Input.mousePosition - centring);
         }
 
         // updates rotation, sets the angle between 0 - 360 degrees
