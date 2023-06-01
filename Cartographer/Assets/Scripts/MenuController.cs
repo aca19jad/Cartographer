@@ -1,26 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class MenuController : MonoBehaviour
-{
-    public GameObject[] menus;
+public class MenuController : MonoBehaviour, IDragHandler{
+
+    //PUBLIC
+    public GameObject[] subMenus;
+
+    public bool enableDrag = true;
+
+    // PRIVATE
+
+    private Canvas canvas;
+    private RectTransform rect;
+    
+    private void Awake(){
+        canvas = FindObjectOfType<Canvas>();
+        rect = GetComponent<RectTransform>();
+    }
 
     void Start(){
-        foreach(GameObject menu in menus)
+        foreach(GameObject menu in subMenus)
         {
             menu.SetActive(false);
         }
     }
-    
-    public void OpenMenu(int index){
-        for (int i = 0; i < menus.Length; i++)
+
+    public void OnDrag(PointerEventData eventData){
+        if(enableDrag)
+            rect.anchoredPosition += eventData.delta / canvas.scaleFactor;
+    }
+
+    public void HideMenu(){
+        gameObject.SetActive(false);
+    }
+
+    public void OpenSubMenu(int index){
+        for (int i = 0; i < subMenus.Length; i++)
         {
             if(i == index){
-                menus[i].SetActive(!menus[i].activeSelf);
-            }
-            else{
-                menus[i].SetActive(false);
+                subMenus[i].SetActive(!subMenus[i].activeSelf);
             }
         }
     }
