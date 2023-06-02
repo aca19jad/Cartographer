@@ -33,6 +33,10 @@ public class MenuController : MonoBehaviour, IDragHandler{
     }
 
     public void HideMenu(){
+        foreach(GameObject submenu in subMenus){
+            submenu.SetActive(false);
+        }
+
         gameObject.SetActive(false);
     }
 
