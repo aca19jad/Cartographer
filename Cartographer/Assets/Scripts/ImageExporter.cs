@@ -23,7 +23,7 @@ public class ImageExporter : MonoBehaviour
         mapScale = mapTF.localScale;
     }
 
-    public void ExportImage(){
+    public void ExportImage(string fileType){
         menus.SetActive(false);
         canvas.worldCamera = saveCam;
         mapTF.localScale = Vector3.one;
@@ -35,7 +35,15 @@ public class ImageExporter : MonoBehaviour
         Texture2D saveTex = toTexture2D(rTex); 
         saveTex.Apply();
 
-        ExportAsPNG(saveTex);
+        if(fileType == "png"){
+            SaveBytesToFile(saveTex.EncodeToPNG(), ".png", Application.dataPath + "/../Maps/");
+        }
+        else if(fileType == "jpg"){
+            SaveBytesToFile(ImageConversion.EncodeToJPG(saveTex), ".jpg", Application.dataPath + "/../Maps/");
+        }
+            
+
+        Object.Destroy(saveTex);
 
         mapTF.localScale = mapScale;
         compassTF.localScale = compassTF.localScale * mapScale.x;
@@ -53,14 +61,11 @@ public class ImageExporter : MonoBehaviour
         return tex;
     }
 
-    private void ExportAsPNG(Texture2D tex){
-        byte[] bytes = tex.EncodeToPNG();
-
-        string dirPath = Application.dataPath + "/../Maps/";
-
+    private void SaveBytesToFile(byte[] bytes, string fileType, string dirPath){
         if(!Directory.Exists(dirPath)){
             Directory.CreateDirectory(dirPath);
         }
-        File.WriteAllBytes(dirPath + "Image" + Random.Range(1, 1000).ToString() + ".png", bytes);
+
+        File.WriteAllBytes(dirPath + "Image" + Random.Range(1, 1000).ToString() + fileType, bytes);
     }
 }
