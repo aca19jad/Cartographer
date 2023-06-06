@@ -7,7 +7,6 @@ public class MapGeneratorIO : MonoBehaviour
 {
     // PUBLIC
     public RectTransform mapRect;
-    public GameObject compassRoseObj;
 
     public TMP_InputField seedField;
 
@@ -21,21 +20,17 @@ public class MapGeneratorIO : MonoBehaviour
     private bool updateCompassRosePosition;
     private bool updateCompassRoseRotation;
 
-    private RawImage compassImg;
-
     void Start()
     {
         mapGen = gameObject.GetComponent<MapGenerator>();
         display = gameObject.GetComponent<MapDisplay>();
 
-        compassImg = compassRoseObj.GetComponent<RawImage>();
         mapGen.autoUpdate = true;
 
         centring = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
 
         updateCompassRosePosition = false;
         updateCompassRoseRotation = false;
-        compassRoseObj.SetActive(false);
 
         seedField.text = mapGen.noiseSettings.seed.ToString();
     }
@@ -78,7 +73,6 @@ public class MapGeneratorIO : MonoBehaviour
     public void ToggleCompassRose(Toggle toggle){
         mapGen.mapSettings.compassRose = toggle.isOn;
         updateCompassRosePosition = toggle.isOn;
-        compassRoseObj.SetActive(toggle.isOn);
     }
 
     public void ToggleCompassRoseUnderLand(Toggle toggle){
@@ -120,23 +114,22 @@ public class MapGeneratorIO : MonoBehaviour
     }
 
     public void UpdateMapType(TMP_Dropdown dropdown){
-        Color compassColor = new Color();
+
         switch(dropdown.value){
             case 0:
                 mapGen.mapSettings.colourScheme = MapColourScheme.SIMPLE_GRYSCL;
-                compassColor = display.grayscale.backgroundLine;         
+         
                 break;
             case 1:
                 mapGen.mapSettings.colourScheme = MapColourScheme.SIMPLE_COLOUR;
-                compassColor = display.coloured.backgroundLine;
+
                 break;
             case 2:
                 mapGen.mapSettings.colourScheme = MapColourScheme.WEATHERED;
-                compassColor = display.weathered.backgroundLine;
+
                 break;
         }
-        compassColor.a = 1f;
-        compassImg.color = compassColor;
+
     }
     #endregion
 
@@ -159,7 +152,6 @@ public class MapGeneratorIO : MonoBehaviour
         // updates position
         if(updateCompassRosePosition){
             mapGen.mapSettings.rosePosition = scaledMousePos;
-            compassRoseObj.GetComponent<RectTransform>().localPosition = (Input.mousePosition - centring);
         }
 
         // updates rotation, sets the angle between 0 - 360 degrees
@@ -175,18 +167,12 @@ public class MapGeneratorIO : MonoBehaviour
                 Vector3.forward);
 
             mapGen.mapSettings.roseAngle = Mathf.Deg2Rad * -angle;
-            compassRoseObj.transform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
         // if the left mouse button is clicked once: stop updating position and start rotation
         if(Input.GetMouseButtonDown(0) && updateCompassRosePosition){
             updateCompassRosePosition = false;
             updateCompassRoseRotation = true;
-        }
-        else if(Input.mouseScrollDelta.y != 0 && updateCompassRosePosition){
-            compassRoseObj.transform.localScale = Vector3.Max(
-                compassRoseObj.transform.localScale + Vector3.one * Input.mouseScrollDelta.y * 0.1f,
-                Vector3.one * 0.1f);
         }
         // if the left mouse button is clicked again: stop updating rotation 
         else if(Input.GetMouseButtonDown(0) && updateCompassRoseRotation){
