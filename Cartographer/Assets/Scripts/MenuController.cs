@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class MenuController : MonoBehaviour, IDragHandler{
 
     //PUBLIC
     public GameObject[] subMenus;
+    public int[] showSubMenus;
 
     public bool enableDrag = true;
 
@@ -21,9 +23,14 @@ public class MenuController : MonoBehaviour, IDragHandler{
     }
 
     void Start(){
-        foreach(GameObject menu in subMenus)
+        for (int i = 0; i < subMenus.Length; i++)
         {
-            menu.SetActive(false);
+            if(ArrayUtility.Contains(showSubMenus, i)){
+                subMenus[i].SetActive(true);
+            }
+            else{
+                subMenus[i].SetActive(false);
+            }
         }
     }
 

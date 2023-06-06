@@ -10,29 +10,37 @@ public class ImageExporter : MonoBehaviour
 
     public Canvas canvas;
     public Transform mapTF;
-    public Transform compassTF;
+    public Transform OverlayPanelTF;
 
-    public RenderTexture rTex;
+    //public RenderTexture rTex;
 
     //PRIVATE
 
     private Vector3 mapScale;
+    private MapGenerator mapGen;
     
     void Start(){
         canvas.worldCamera = Camera.main;
         mapScale = mapTF.localScale;
+        mapGen = FindObjectOfType<MapGenerator>();
     }
 
     public void ExportImage(string fileType){
         menus.SetActive(false);
         canvas.worldCamera = saveCam;
         mapTF.localScale = Vector3.one;
-        compassTF.localPosition = compassTF.localPosition / mapScale.x;
-        compassTF.localScale = compassTF.localScale / mapScale.x;
+        OverlayPanelTF.localPosition = OverlayPanelTF.localPosition / mapScale.x;
+        OverlayPanelTF.localScale = OverlayPanelTF.localScale / mapScale.x;
+
+        if(saveCam.targetTexture != null){
+            saveCam.targetTexture.Release();
+        }
+
+        saveCam.targetTexture = new RenderTexture(mapGen.mapWidth, mapGen.mapHeight, 24);
 
         saveCam.Render();
 
-        Texture2D saveTex = toTexture2D(rTex); 
+        Texture2D saveTex = toTexture2D(saveCam.targetTexture); 
         saveTex.Apply();
 
         if(fileType == "png"){
@@ -44,16 +52,17 @@ public class ImageExporter : MonoBehaviour
             
 
         Object.Destroy(saveTex);
+        //saveCam.targetTexture.Release();
 
         mapTF.localScale = mapScale;
-        compassTF.localScale = compassTF.localScale * mapScale.x;
-        compassTF.localPosition = compassTF.localPosition * mapScale.x;
+        OverlayPanelTF.localScale = OverlayPanelTF.localScale * mapScale.x;
+        OverlayPanelTF.localPosition = OverlayPanelTF.localPosition * mapScale.x;
         menus.SetActive(true);
         canvas.worldCamera = Camera.main;
     }
 
     private Texture2D toTexture2D(RenderTexture rTex){
-        Texture2D tex = new Texture2D(1000, 750, TextureFormat.RGB24, false);
+        Texture2D tex = new Texture2D(mapGen.mapWidth, mapGen.mapHeight, TextureFormat.RGB24, false);
         // ReadPixels looks at the active RenderTexture.
         RenderTexture.active = rTex;
         tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
