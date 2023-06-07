@@ -22,7 +22,7 @@ public static class MapDrawer
         return colourMap;
     }
 
-    public static Color[] DrawMap(float[,] noiseMap, MapSettings settings, Palette palette){
+    public static Color[] DrawMap(float[,] noiseMap, MapSettings settings){
         width = noiseMap.GetLength(0);
         height = noiseMap.GetLength(1);
 
@@ -32,18 +32,18 @@ public static class MapDrawer
             for(int x = 0; x < width; x++, index++){
         
                 if (noiseMap [x, y] < settings.seaLevel){
-                    colourMap[index] = palette.sea.Evaluate(Mathf.InverseLerp(0, settings.seaLevel, noiseMap[x, y]));
+                    colourMap[index] = settings.palette.sea.Evaluate(Mathf.InverseLerp(0, settings.seaLevel, noiseMap[x, y]));
                 }
                 else if (IsShoreline(noiseMap, x, y, settings.seaLevel, settings.lineThickness)){
-                    colourMap[index] = palette.line;
+                    colourMap[index] = settings.palette.line;
                 }
                 else{
-                    colourMap[index] = palette.land.Evaluate(Mathf.InverseLerp(settings.seaLevel, 1, noiseMap[x, y]));
+                    colourMap[index] = settings.palette.land.Evaluate(Mathf.InverseLerp(settings.seaLevel, 1, noiseMap[x, y]));
                 }
             }
         }
 
-        colourMap = Decorate(colourMap, noiseMap, settings, palette);
+        colourMap = Decorate(colourMap, noiseMap, settings);
 
         return colourMap;
     }
@@ -62,16 +62,16 @@ public static class MapDrawer
         return false;
     }
 
-    private static Color[] Decorate(Color[] colourMap, float[,] noiseMap,  MapSettings settings, Palette palette){
+    private static Color[] Decorate(Color[] colourMap, float[,] noiseMap,  MapSettings settings){
 
         if(settings.compassRose)
-            colourMap = DrawCompassRoseRays(colourMap, noiseMap, settings, palette.backgroundLine);
+            colourMap = DrawCompassRoseRays(colourMap, noiseMap, settings);
     
         if(settings.gridLines)
-            colourMap = DrawGridLines(colourMap, noiseMap, settings, palette.backgroundLine);
+            colourMap = DrawGridLines(colourMap, noiseMap, settings);
 
         if(settings.border)
-            colourMap = DrawBorder(colourMap, settings.borderWidth, palette.border);
+            colourMap = DrawBorder(colourMap, settings.borderWidth, settings.palette.border);
 
         return colourMap;
     }
@@ -96,7 +96,7 @@ public static class MapDrawer
         return colourMap;
     }
 
-    private static Color[] DrawGridLines(Color[] colourMap, float[,] noiseMap, MapSettings settings, Color lineColour){
+    private static Color[] DrawGridLines(Color[] colourMap, float[,] noiseMap, MapSettings settings){
         for (int x = 0; x < width; x+=settings.lineSpacing)
         {
             colourMap = LineDrawer.DrawLine(
@@ -104,7 +104,7 @@ public static class MapDrawer
                 noiseMap, 
                 new Vector2(x, 0), 
                 new Vector2(x, height-1), 
-                lineColour, 
+                settings.palette.backgroundLine, 
                 settings.gridLineUnder ? settings.seaLevel : 2
             );
         }
@@ -116,7 +116,7 @@ public static class MapDrawer
                 noiseMap, 
                 new Vector2(0,y), 
                 new Vector2(width-1,y), 
-                lineColour, 
+                settings.palette.backgroundLine, 
                 settings.gridLineUnder ? settings.seaLevel : 2
             );
         }
@@ -125,7 +125,7 @@ public static class MapDrawer
     }
 
     // function that draws the rays extending from the compass rose 
-    private static Color[] DrawCompassRoseRays(Color[] colourMap, float[,] noiseMap, MapSettings settings, Color lineColour){
+    private static Color[] DrawCompassRoseRays(Color[] colourMap, float[,] noiseMap, MapSettings settings){
 
         // stores a value equal to 1/16 of a full turn or 22.5 degrees
         float delta_theta = Mathf.PI/8f;
@@ -163,7 +163,7 @@ public static class MapDrawer
                 noiseMap, 
                 points[0], 
                 points[1], 
-                lineColour, 
+                settings.palette.backgroundLine, 
                 settings.compassRoseUnder ? settings.seaLevel : 2
             );
         }

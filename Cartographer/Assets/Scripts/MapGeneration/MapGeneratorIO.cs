@@ -10,6 +10,10 @@ public class MapGeneratorIO : MonoBehaviour
 
     public TMP_InputField seedField;
 
+    public Palette grayscale;
+    public Palette coloured;
+    public Palette weathered;
+
     // PRIVATE
     private MapGenerator mapGen;
     private MapDisplay display;
@@ -113,20 +117,24 @@ public class MapGeneratorIO : MonoBehaviour
         mapGen.noiseSettings.seed = int.Parse(field.text);
     }
 
-    public void UpdateMapType(TMP_Dropdown dropdown){
+    public void UpdateColourScheme(TMP_Dropdown dropdown){
 
         switch(dropdown.value){
             case 0:
                 mapGen.mapSettings.colourScheme = MapColourScheme.SIMPLE_GRYSCL;
-         
+                mapGen.mapSettings.palette = grayscale;
                 break;
             case 1:
                 mapGen.mapSettings.colourScheme = MapColourScheme.SIMPLE_COLOUR;
-
+                mapGen.mapSettings.palette = coloured;
                 break;
             case 2:
                 mapGen.mapSettings.colourScheme = MapColourScheme.WEATHERED;
+                mapGen.mapSettings.palette = weathered;
+                break;
 
+            case 4:
+                mapGen.mapSettings.colourScheme = MapColourScheme.NOISEMAP;
                 break;
         }
 

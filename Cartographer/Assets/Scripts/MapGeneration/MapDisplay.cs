@@ -12,7 +12,7 @@ public class MapDisplay : MonoBehaviour
     public Palette weathered;
 
     [HideInInspector]
-    public Texture2D currentMapTexture;
+    //public Texture2D currentMapTexture;
 
     public void DrawMap(float[,] noiseMap, MapSettings mapSettings){
         int width = noiseMap.GetLength(0);
@@ -21,26 +21,33 @@ public class MapDisplay : MonoBehaviour
 
         Color[] colourMap = new Color[width * height];
 
-        
-        switch(mapSettings.colourScheme){
-            case MapColourScheme.NOISEMAP:
-                colourMap = MapDrawer.DrawNoiseMap(noiseMap);
-                break;
-            case MapColourScheme.SIMPLE_GRYSCL:
-                colourMap = MapDrawer.DrawMap(noiseMap, mapSettings, grayscale);
-                break;
-            case MapColourScheme.SIMPLE_COLOUR:
-                colourMap = MapDrawer.DrawMap(noiseMap, mapSettings, coloured);
-                break;
-            case MapColourScheme.WEATHERED:
-                colourMap = MapDrawer.DrawMap(noiseMap, mapSettings, weathered);
-                break;
+        if(mapSettings.colourScheme == MapColourScheme.NOISEMAP){
+            colourMap = MapDrawer.DrawNoiseMap(noiseMap);
         }
+        else{
+            colourMap = MapDrawer.DrawMap(noiseMap, mapSettings);
+        }
+
+        
+        // switch(mapSettings.colourScheme){
+        //     case MapColourScheme.NOISEMAP:
+                
+        //         break;
+        //     case MapColourScheme.SIMPLE_GRYSCL:
+                
+        //         break;
+        //     case MapColourScheme.SIMPLE_COLOUR:
+        //         colourMap = MapDrawer.DrawMap(noiseMap, mapSettings);
+        //         break;
+        //     case MapColourScheme.WEATHERED:
+        //         colourMap = MapDrawer.DrawMap(noiseMap, mapSettings);
+        //         break;
+        // }
 
         texture.SetPixels(colourMap);
         texture.Apply();
 
-        currentMapTexture = texture;
+        //currentMapTexture = texture;
 
         img.texture = texture;
 
@@ -49,12 +56,4 @@ public class MapDisplay : MonoBehaviour
     }
 }
 
-[System.Serializable]
-public struct Palette{
-    public Color line;
-    public Color backgroundLine;
-    public Color border;
-    public Gradient land;
-    public Gradient sea;
-}
 

@@ -106,11 +106,5 @@ public class MapGenerator : MonoBehaviour
     }
 }
 
-// different choices of map to render
-public enum MapColourScheme{
-    NOISEMAP,
-    SIMPLE_GRYSCL,
-    SIMPLE_COLOUR, 
-    WEATHERED,
-}
+
 
