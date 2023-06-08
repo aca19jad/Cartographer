@@ -63,8 +63,8 @@ public static class MapDrawer
     }
 
     private static Color[] Decorate(Color[] colourMap, float[,] noiseMap,  MapSettings settings){
-
-        if(settings.compassRose)
+        
+        if(settings.compassRays)
             colourMap = DrawCompassRoseRays(colourMap, noiseMap, settings);
     
         if(settings.gridLines)
@@ -164,7 +164,7 @@ public static class MapDrawer
                 points[0], 
                 points[1], 
                 settings.palette.backgroundLine, 
-                settings.compassRoseUnder ? settings.seaLevel : 2
+                settings.compassRaysUnder ? settings.seaLevel : 2
             );
         }
 

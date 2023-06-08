@@ -104,6 +104,10 @@ public class MapGenerator : MonoBehaviour
         check_mapSettings = mapSettings;
         check_noiseSettings = noiseSettings;
     }
+
+    public float[,] GetNoiseMap(){
+        return noiseMap;
+    }
 }
 
 

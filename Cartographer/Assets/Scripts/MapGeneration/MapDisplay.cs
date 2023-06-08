@@ -7,10 +7,6 @@ public class MapDisplay : MonoBehaviour
 {
     public RawImage img;
 
-    public Palette grayscale;
-    public Palette coloured;
-    public Palette weathered;
-
     [HideInInspector]
     //public Texture2D currentMapTexture;
 
@@ -27,22 +23,6 @@ public class MapDisplay : MonoBehaviour
         else{
             colourMap = MapDrawer.DrawMap(noiseMap, mapSettings);
         }
-
-        
-        // switch(mapSettings.colourScheme){
-        //     case MapColourScheme.NOISEMAP:
-                
-        //         break;
-        //     case MapColourScheme.SIMPLE_GRYSCL:
-                
-        //         break;
-        //     case MapColourScheme.SIMPLE_COLOUR:
-        //         colourMap = MapDrawer.DrawMap(noiseMap, mapSettings);
-        //         break;
-        //     case MapColourScheme.WEATHERED:
-        //         colourMap = MapDrawer.DrawMap(noiseMap, mapSettings);
-        //         break;
-        // }
 
         texture.SetPixels(colourMap);
         texture.Apply();

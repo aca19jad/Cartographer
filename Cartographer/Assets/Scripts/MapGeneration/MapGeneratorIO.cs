@@ -26,8 +26,8 @@ public class MapGeneratorIO : MonoBehaviour
 
     void Start()
     {
-        mapGen = gameObject.GetComponent<MapGenerator>();
-        display = gameObject.GetComponent<MapDisplay>();
+        mapGen = GetComponent<MapGenerator>();
+        display = GetComponent<MapDisplay>();
 
         mapGen.autoUpdate = true;
 
@@ -42,7 +42,8 @@ public class MapGeneratorIO : MonoBehaviour
     void Update()
     {
         // rescale the mouse position coordinates to match the map size
-        CalculateMousePosition(mapRect.localScale);
+        //CalculateMousePosition();
+        scaledMousePos = ScreenPointToMapCoord(Input.mousePosition);
     
         if(mapGen.mapSettings.compassRose){
             UpdateCompassRose();
@@ -50,6 +51,7 @@ public class MapGeneratorIO : MonoBehaviour
     }
 
     #region [Public UI callbacks]
+    
     public void Generate(){
         mapGen.noiseSettings.seed = System.DateTime.Now.ToString().GetHashCode();
         mapGen.GenerateMap();
@@ -81,6 +83,13 @@ public class MapGeneratorIO : MonoBehaviour
 
     public void ToggleCompassRoseUnderLand(Toggle toggle){
         mapGen.mapSettings.compassRoseUnder = toggle.isOn;
+    }
+
+    public void ToggleCompassRays(Toggle toggle){
+        mapGen.mapSettings.compassRays = toggle.isOn;
+    }
+    public void ToggleCompassRaysUnderLand(Toggle toggle){
+        mapGen.mapSettings.compassRaysUnder = toggle.isOn;
     }
 
     // BUTTONS
@@ -141,20 +150,6 @@ public class MapGeneratorIO : MonoBehaviour
     }
     #endregion
 
-    // function that scales the mouse position from screen space to map space
-    private void CalculateMousePosition(Vector3 scale){
-        // rescale (0, 0) to the bottom left corner of the map instead of the screen
-        Vector3 pixelOffset = new Vector3(
-            (Screen.width - mapGen.mapWidth * scale.x ) / 2f,
-            (Screen.height - mapGen.mapHeight * scale.y ) / 2f,
-            0
-        );
-
-        // update the scaled mouse position with the new zero point and scaled to the correct width and height
-        scaledMousePos.x = (int) ((Input.mousePosition.x - pixelOffset.x) / scale.x);
-        scaledMousePos.y = (int) ((Input.mousePosition.y - pixelOffset.y) / scale.y);
-    }
-
     // Update callbacks triggered by input for the compass rose
     private void UpdateCompassRose(){
         // updates position
@@ -186,5 +181,37 @@ public class MapGeneratorIO : MonoBehaviour
         else if(Input.GetMouseButtonDown(0) && updateCompassRoseRotation){
             updateCompassRoseRotation = false;
         }
+    }
+
+    // function that scales a pixel coordinate from screen space to map space
+    public Vector2Int ScreenPointToMapCoord(Vector3 point){
+        Vector3 scale = mapRect.localScale;
+
+        // rescale (0, 0) to the bottom left corner of the map instead of the screen
+        Vector3 pixelOffset = new Vector3(
+            (Screen.width - mapGen.mapWidth * scale.x ) / 2f,
+            (Screen.height - mapGen.mapHeight * scale.y ) / 2f,
+            0
+        );
+
+        return new Vector2Int(
+            (int) ((point.x-pixelOffset.x)/scale.x),
+            (int) ((point.y-pixelOffset.y)/scale.y)
+        );
+    }
+
+    public Palette GetPalette(){
+        return mapGen.mapSettings.palette;
+    }
+    public float[,] GetHeightMap(){
+        return mapGen.GetNoiseMap();
+    }
+
+    public float GetSeaLevel(){
+        return mapGen.mapSettings.seaLevel;
+    }
+
+    public Texture2D GetRoseTexture(){
+        return mapGen.mapSettings.roseTexture;
     }
 }
