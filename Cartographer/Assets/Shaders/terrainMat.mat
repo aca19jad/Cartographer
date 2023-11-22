@@ -32,18 +32,27 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _roseTex:
+        m_Texture: {fileID: 2800000, guid: 3d096a2bc5b828543947815621ee6dbf, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
+    - _isSea: 1
     - _lacunarity: 2.5
-    - _persistance: 0.5
+    - _lineThickness: 0.02
+    - _persistance: 0.55
+    - _roseShow: 1
+    - _roseUnderTerrain: 0
     - _scale: 1
     - _seaLevel: 0.5
     m_Colors:
     - _imgSize: {r: 1500, g: 1000, b: 0, a: 0}
     - _landHigh: {r: 0.4198113, g: 1, b: 0.4198113, a: 0}
     - _landLow: {r: 0.08810966, g: 0.41509432, b: 0.17993407, a: 0}
+    - _line: {r: 0, g: 0, b: 0, a: 0}
     - _offset: {r: 0, g: 0, b: 0, a: 0}
     - _seaDeep: {r: 0.020247417, g: 0.7940101, b: 0.8584906, a: 0}
     - _seaShallow: {r: 0.042986836, g: 0.37099493, b: 0.3962264, a: 0}
