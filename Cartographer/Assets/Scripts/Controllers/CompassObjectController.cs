@@ -81,7 +81,7 @@ public class CompassObjectController : MonoBehaviour
         Texture2D newTex = new Texture2D(mapIO.GetRoseTexture().width, mapIO.GetRoseTexture().height);
         newTex.SetPixels(mapIO.GetRoseTexture().GetPixels());
         newTex.wrapMode = TextureWrapMode.Clamp;
-        newTex.filterMode = FilterMode.Point;
+        newTex.filterMode = FilterMode.Bilinear;
         newTex.Apply();
 
 
@@ -109,11 +109,11 @@ public class CompassObjectController : MonoBehaviour
                     pos = mapIO.ScreenPointToMapCoord(compassPoint + texelPos);
 
                     if(pos.x >= 0 && pos.x < heightMap.GetLength(0) && pos.y >= 0 && pos.y < heightMap.GetLength(0)){
-                        if(heightMap[pos.x, pos.y] >= mapIO.GetSeaLevel() && hideUnderLand){
-                            compassColours[index].a = 0;
+                        if(heightMap[pos.x, pos.y] < mapIO.GetSeaLevel() && hideUnderLand){
+                            compassColours[index].a = 1;
                         }
                         else{
-                            compassColours[index].a = 1;
+                            compassColours[index].a = 0;
                         }
                     }
                     else{

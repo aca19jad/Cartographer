@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: terrainMat
+  m_Shader: {fileID: -6465566751694194690, guid: 22852acd75d97a54fa958dd4a831defc, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _heightMap_64be765d233a4413b791a7f8747565b2_mainTex_4135677180:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _heightMap_64be765d233a4413b791a7f8747565b2_mainTex_652882174:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BUILTIN_QueueControl: 0
+    - _BUILTIN_QueueOffset: 0
+    - _lacunarity: 2.5
+    - _persistance: 0.5
+    - _scale: 1
+    - _seaLevel: 0.5
+    m_Colors:
+    - _imgSize: {r: 1500, g: 1000, b: 0, a: 0}
+    - _landHigh: {r: 0.4198113, g: 1, b: 0.4198113, a: 0}
+    - _landLow: {r: 0.08810966, g: 0.41509432, b: 0.17993407, a: 0}
+    - _offset: {r: 0, g: 0, b: 0, a: 0}
+    - _seaDeep: {r: 0.020247417, g: 0.7940101, b: 0.8584906, a: 0}
+    - _seaShallow: {r: 0.042986836, g: 0.37099493, b: 0.3962264, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &8268423765574498419
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639247ca83abc874e893eb93af2b5e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 0
